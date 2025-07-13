@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import datetime
 from unittest.mock import patch
 
@@ -8,7 +10,7 @@ from app.main import outdated_products
 
 class NewDate(datetime.date):
     @classmethod
-    def today(cls):
+    def today(cls) -> NewDate:
         return cls(2010, 1, 1)
 
 
@@ -16,7 +18,7 @@ datetime.date = NewDate
 
 
 @pytest.fixture
-def products():
+def products() -> list[dict]:
     return [
         {
             "name": "salmon",
@@ -56,7 +58,13 @@ def products():
     ]
 
 )
-def test_outdated_products(year, month, day, result, products):
+def test_outdated_products(
+        year: int,
+        month: int,
+        day: int,
+        result: list[str],
+        products: list[dict]
+) -> None:
     with patch("datetime.date.today") as patched_today:
         patched_today.return_value = datetime.date(year, month, day)
         assert outdated_products(products) == result
